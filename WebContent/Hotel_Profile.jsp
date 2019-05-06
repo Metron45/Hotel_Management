@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Profile</title>
+<title>Insert title here</title>
 </head>
 <body>
-Logged In As A Client
+Logged In As A Hotel
 </body>
 </html>

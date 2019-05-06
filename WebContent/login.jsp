@@ -12,5 +12,8 @@
 		Password: <input type="password" name="password">
 		<input type="submit" value="Login">
 	</form>
+	<form method="post" action="Redirect_Register_User">
+		<input type="submit" value="Register User">
+	</form>
 </body>
 </html>

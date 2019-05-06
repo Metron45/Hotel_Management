@@ -1,13 +1,13 @@
-package Credentials;
+package Profiles;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,16 +15,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class Register_User
+ * Servlet implementation class Profile
  */
-@WebServlet("/Register_User")
-public class Register_User extends HttpServlet {
+@WebServlet("/Profile")
+public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Register_User() {
+    public Profile() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -41,44 +41,39 @@ public class Register_User extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		String user_type = request.getParameter("account_type");
-		
-		//PrintWriter out = response.getWriter();
-		//out.println(user_type);
-		
+
+		String query = "select * from credentials where Username=? and Password=?";
 		try {
-			String query = "insert into credentials(Username,Password,Account_Type,Name,Address,Phone,Description) values(?,?,?,?,?,?,?)";
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_database", "root", "");
+			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_database", "root","");
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setString(1, username);
 			ps.setString(2, password);
-			if(user_type == null) {
-				ps.setString(3, "Client");
-			}else {
-				ps.setString(3, "Hotel");
-			}
-			ps.setString(4, request.getParameter("name"));
-			ps.setString(5, request.getParameter("address"));
-			ps.setString(6, request.getParameter("phone"));
-			ps.setString(7, request.getParameter("description"));
-			ps.executeUpdate();
+			ResultSet rs = ps.executeQuery();
 			
-			PrintWriter out = response.getWriter();
-			out.println("Registration Successful");
-			RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-			rd.include(request, response);
+			rs.next();
+			out.print("<table>"
+					+ "<tr> <th> Name:"+ rs.getString("Name") +"</th> </tr>"
+					+ "<tr> <th> Address:"+ rs.getString("Address") +"</th> </tr>"
+					+ "<tr> <th> Phone:"+ rs.getString("Phone") +"</th> </tr>"
+					+ "<tr> <th> Description:"+ rs.getString("Description") +"</th> </tr>"
+					+ "</table>");
+			if(rs.getString("Account_Type").equals("Hotel")) {
+				
+
+			}
 			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			out.println("Exeption Thrown");
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			out.println("SQL Exeption Thrown");
 			e.printStackTrace();
 		}
 	}
-
 }

@@ -3,8 +3,12 @@ package Credentials;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,26 +45,38 @@ public class LoginCheck extends HttpServlet {
 		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		
+		PrintWriter out = response.getWriter();
 		try {
-			String query = "insert into credentials(Username,Password) values(?,?)";
+			String query = "select Username,Password from credentials where Username=? and Password=?";
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_database", "root", "");
+			PreparedStatement ps = connection.prepareStatement(query);
+			ps.setString(1, username);
+			ps.setString(2, password);
+
+			ResultSet rs = ps.executeQuery();
+			
+			RequestDispatcher rd;
+			while (rs.next()) {	
+				out.print("Welcome " + username);
+				rd = request.getRequestDispatcher("Profile");
+				rd.forward(request, response);
+				return;
+			}
+			out.print("Sorry UserName or Password Error!");  
+			rd = request.getRequestDispatcher("login.jsp");
+			rd.include(request, response);
+			return;
+			
 			
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			out.println("Exeption Thrown");
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			out.println("SQL Exeption Thrown");
 			e.printStackTrace();
 		}
 		
-		
-		
-		
-		if(username.equals("test") && password.equals("test")) {
-			response.sendRedirect("Profile.jsp");
-		}
 	}
 
 }

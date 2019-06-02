@@ -47,12 +47,12 @@ public class Add_Reservation extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-
+		
 		try {
 			
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hotel_database", "root", "");
-						
+			RequestDispatcher rd;
 			//insert reservation
 			HttpSession httpSession = request.getSession(false);
 			if(httpSession != null){
@@ -66,24 +66,35 @@ public class Add_Reservation extends HttpServlet {
 				PreparedStatement ps_hotels = connection.prepareStatement(query_hotels);
 				ps_hotels.setString(1, "Hotel");
 				ResultSet rs = ps_hotels.executeQuery();
-
-				while(rs.next()) {
+				boolean hotel_found = false;
+				while(rs.next() && !hotel_found) {
 					if(request.getParameter(rs.getString("ID_User")) != null) {
 						ps.setString(1, rs.getString("ID_User"));
+						hotel_found = true;
 					}
 				}
-				//ps.setString(1, rs.getString("ID_User"));
-				//rest of additions
-				ps.setString(2, (String) httpSession.getAttribute("ID_User"));
-				ps.setDate(3, java.sql.Date.valueOf(request.getParameter("Date_Start")));
-				ps.setDate(4, java.sql.Date.valueOf(request.getParameter("Date_End")));
-				ps.setString(5, request.getParameter("People"));
-				ps.executeUpdate();
+				
+				if(hotel_found == true) {
+					//rest of additions
+					ps.setString(2, (String) httpSession.getAttribute("ID_User"));
+					ps.setDate(3, java.sql.Date.valueOf(request.getParameter("Date_Start")));
+					ps.setDate(4, java.sql.Date.valueOf(request.getParameter("Date_End")));
+					ps.setString(5, request.getParameter("People"));
+					ps.executeUpdate();
+					
+					//return to Profile
+					
+					rd = request.getRequestDispatcher("Profile");
+					rd.forward(request, response);
+				}
+				else {
+					out.print("Please Select Hotel before adding reservation");
+					rd = request.getRequestDispatcher("Profile");
+					rd.include(request, response);
+				}
+				
 			}
-			//return to Profile
-			RequestDispatcher rd;
-			rd = request.getRequestDispatcher("Profile");
-			rd.forward(request, response);
+			
 
 			
 		} catch (ClassNotFoundException e) {

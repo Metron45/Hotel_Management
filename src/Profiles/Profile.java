@@ -3,6 +3,7 @@ package Profiles;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -101,13 +102,13 @@ public class Profile extends HttpServlet {
 						reservation_rs = ps.executeQuery();
 						reservation_rs.next();
 						out.print("<tr>"
-								+"<th>"+reservation_rs.getString("Name")+ "</th>"
-								+"<th>"+reservation_rs.getString("Address")+ "</th>"
-								+"<th>"+reservation_rs.getString("Phone")+ "</th>"
-								+"<th>"+df.format(rs.getDate("Date_Start"))+ "</th>"
-								+"<th>"+df.format(rs.getDate("Date_End"))+ "</th>"
-								+"<th>"+rs.getString("People")+ "</th>"
-								+"</tr>");
+									+"<th>"+reservation_rs.getString("Name")+ "</th>"
+									+"<th>"+reservation_rs.getString("Address")+ "</th>"
+									+"<th>"+reservation_rs.getString("Phone")+ "</th>"
+									+"<th>"+df.format(rs.getDate("Date_Start"))+ "</th>"
+									+"<th>"+df.format(rs.getDate("Date_End"))+ "</th>"
+									+"<th>"+rs.getString("People")+ "</th>"
+									+"</tr>");
 					}
 					out.print("</table>");
 					//logout

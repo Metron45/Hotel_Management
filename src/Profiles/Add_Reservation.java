@@ -3,10 +3,12 @@ package Profiles;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -56,22 +58,26 @@ public class Add_Reservation extends HttpServlet {
 			if(httpSession != null){
 				
 			
-				String query = "insert into reservations(Hotel_Id,Client_Id,Data,People) values(?,?,?,?)";
+				String query = "insert into reservations(Hotel_Id,Client_Id,Date_Start,Date_End,People) values(?,?,?,?,?)";
 				PreparedStatement ps = connection.prepareStatement(query);
 				
-				//
+				//finding which hotel was added
 				String query_hotels = "select * from credentials where Account_Type=?";
 				PreparedStatement ps_hotels = connection.prepareStatement(query_hotels);
 				ps_hotels.setString(1, "Hotel");
 				ResultSet rs = ps_hotels.executeQuery();
-				String user_type = null;
-				while(user_type == null && rs.next()) {
-					user_type = request.getParameter("Hotel_check");
+
+				while(rs.next()) {
+					if(request.getParameter(rs.getString("ID_User")) != null) {
+						ps.setString(1, rs.getString("ID_User"));
+					}
 				}
-				ps.setString(1, rs.getString("ID_User"));
+				//ps.setString(1, rs.getString("ID_User"));
+				//rest of additions
 				ps.setString(2, (String) httpSession.getAttribute("ID_User"));
-				ps.setString(3, request.getParameter("Date"));
-				ps.setString(4, request.getParameter("People"));
+				ps.setDate(3, java.sql.Date.valueOf(request.getParameter("Date_Start")));
+				ps.setDate(4, java.sql.Date.valueOf(request.getParameter("Date_End")));
+				ps.setString(5, request.getParameter("People"));
 				ps.executeUpdate();
 			}
 			//return to Profile

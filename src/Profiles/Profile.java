@@ -7,6 +7,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -75,18 +77,21 @@ public class Profile extends HttpServlet {
 				ResultSet reservation_rs;
 				if( type.equals("Hotel")) {
 					//request Hotel user reservations
-					query = "select Client_Id,Data,People from reservations where Hotel_Id=?";
+					query = "select Client_Id,Date_Start,Date_End,People from reservations where Hotel_Id=?";
 					ps = connection.prepareStatement(query);				
 					ps.setString(1, (String) httpSession.getAttribute("ID_User"));
 					rs = ps.executeQuery();
 					
-					//display Client user reservations
+					//display Hotel user reservations
+
+					DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 					out.print("<table>");
 					out.print("<tr>"
 							+"<th> Hotel:"+ "</th>"
 							+"<th> Address:" + "</th>"
 							+"<th> Phone:" + "</th>"
-							+"<th> Date:"+ "</th>"
+							+"<th> Date Start:"+ "</th>"
+							+"<th> Date End:"+ "</th>"
 							+"<th> People:"+ "</th>"
 							+"</tr>");
 					while(rs.next()) {
@@ -99,7 +104,8 @@ public class Profile extends HttpServlet {
 								+"<th>"+reservation_rs.getString("Name")+ "</th>"
 								+"<th>"+reservation_rs.getString("Address")+ "</th>"
 								+"<th>"+reservation_rs.getString("Phone")+ "</th>"
-								+"<th>"+rs.getString("Data")+ "</th>"
+								+"<th>"+df.format(rs.getDate("Date_Start"))+ "</th>"
+								+"<th>"+df.format(rs.getDate("Date_End"))+ "</th>"
 								+"<th>"+rs.getString("People")+ "</th>"
 								+"</tr>");
 					}
@@ -108,18 +114,21 @@ public class Profile extends HttpServlet {
 					request.getRequestDispatcher("Profile.jsp").include(request, response);
 				}else {
 					//request user reservations
-					query = "select Hotel_Id,Data,People from reservations where Client_Id=?";
+					query = "select * from reservations where Client_Id=?";
 					ps = connection.prepareStatement(query);				
 					ps.setString(1, (String) httpSession.getAttribute("ID_User"));
 					rs = ps.executeQuery();
 					
 					//display Client user reservations
+					
+					DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 					out.print("<table>");
 					out.print("<tr>"
 							+"<th> Hotel:"+ "</th>"
 							+"<th> Address:" + "</th>"
 							+"<th> Phone:" + "</th>"
-							+"<th> Date:"+ "</th>"
+							+"<th> Date Start:"+ "</th>"
+							+"<th> Date End:"+ "</th>"
 							+"<th> People:"+ "</th>"
 							+"</tr>");
 					while(rs.next()) {
@@ -132,7 +141,8 @@ public class Profile extends HttpServlet {
 								+"<th>"+reservation_rs.getString("Name")+ "</th>"
 								+"<th>"+reservation_rs.getString("Address")+ "</th>"
 								+"<th>"+reservation_rs.getString("Phone")+ "</th>"
-								+"<th>"+rs.getString("Data")+ "</th>"
+								+"<th>"+df.format(rs.getDate("Date_Start"))+ "</th>"
+								+"<th>"+df.format(rs.getDate("Date_End"))+ "</th>"
 								+"<th>"+rs.getString("People")+ "</th>"
 								+"</tr>");
 					}
@@ -146,7 +156,7 @@ public class Profile extends HttpServlet {
 					ps.setString(1, "Hotel");
 					rs = ps.executeQuery();
 					while(rs.next()) {
-						out.print("<input type=\"checkbox\" name=\"Hotel_check\">");
+						out.print("<input type=\"checkbox\" name=\""+ rs.getString("ID_User") +"\">");
 						out.print(rs.getString("Name") 
 								+ rs.getString("Address")
 								+ rs.getString("Phone")
@@ -154,7 +164,8 @@ public class Profile extends HttpServlet {
 						out.print("<br>");
 					}
 					
-					out.print("Date:<input type=\"text\" name=\"Date\" required=\"required\">");
+					out.print("Date Start:<input type=\"date\" name=\"Date_Start\" required=\"required\">");
+					out.print("Date End:<input type=\"date\" name=\"Date_End\" required=\"required\">");
 					out.print("People:<input type=\"text\" name=\"People\" required=\"required\">");
 					out.print("<input type=\"submit\" value=\"Add Reservation\">");
 					out.print("</form>");

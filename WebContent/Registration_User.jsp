@@ -17,5 +17,8 @@
 		Register As Hotel?: <input type="checkbox" name="account_type">
 		<input type="submit" value="Register">
 	</form>
+	<form method="post" action="Redirect_Login_User">
+		<input type="submit" value="Return">
+	</form>
 </body>
 </html>

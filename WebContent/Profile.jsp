@@ -7,6 +7,9 @@
 <title>Profile</title>
 </head>
 <body>
-Logged In As A Client
+	
+	<form method="post" action="Redirect_Login_User">
+		<input type="submit" value="Log Off">
+	</form>
 </body>
 </html>

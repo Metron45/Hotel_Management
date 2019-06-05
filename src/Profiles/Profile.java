@@ -78,16 +78,16 @@ public class Profile extends HttpServlet {
 				ResultSet reservation_rs;
 				if( type.equals("Hotel")) {
 					//request Hotel user reservations
-					query = "select Client_Id,Date_Start,Date_End,People from reservations where Hotel_Id=?";
+					query = "select * from reservations where Hotel_Id=?";
 					ps = connection.prepareStatement(query);				
 					ps.setString(1, (String) httpSession.getAttribute("ID_User"));
 					rs = ps.executeQuery();
 					
 					//display Hotel user reservations
-
 					DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 					out.print("<table>");
 					out.print("<tr>"
+							+"<th> Delete:"+ "</th>"
 							+"<th> Hotel:"+ "</th>"
 							+"<th> Address:" + "</th>"
 							+"<th> Phone:" + "</th>"
@@ -95,6 +95,7 @@ public class Profile extends HttpServlet {
 							+"<th> Date End:"+ "</th>"
 							+"<th> People:"+ "</th>"
 							+"</tr>");
+					out.print("<form method=\"post\" action=\"Delete_Reservation\">");
 					while(rs.next()) {
 						query = "select * from credentials where ID_User=?";
 						ps = connection.prepareStatement(query);				
@@ -102,6 +103,9 @@ public class Profile extends HttpServlet {
 						reservation_rs = ps.executeQuery();
 						reservation_rs.next();
 						out.print("<tr>"
+									+"<th>" +
+									"<input type=\"checkbox\" name=\""+ rs.getString("Reservation_id") +"\">"
+									+ "</th>"
 									+"<th>"+reservation_rs.getString("Name")+ "</th>"
 									+"<th>"+reservation_rs.getString("Address")+ "</th>"
 									+"<th>"+reservation_rs.getString("Phone")+ "</th>"
@@ -110,6 +114,8 @@ public class Profile extends HttpServlet {
 									+"<th>"+rs.getString("People")+ "</th>"
 									+"</tr>");
 					}
+					out.print("<th><input type=\"submit\" value=\"Delete\"></th>");
+					out.print("</form>");
 					out.print("</table>");
 					//logout
 					request.getRequestDispatcher("Profile.jsp").include(request, response);
@@ -125,6 +131,7 @@ public class Profile extends HttpServlet {
 					DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 					out.print("<table>");
 					out.print("<tr>"
+							+"<th> Delete:"+ "</th>"
 							+"<th> Hotel:"+ "</th>"
 							+"<th> Address:" + "</th>"
 							+"<th> Phone:" + "</th>"
@@ -132,6 +139,7 @@ public class Profile extends HttpServlet {
 							+"<th> Date End:"+ "</th>"
 							+"<th> People:"+ "</th>"
 							+"</tr>");
+					out.print("<form method=\"post\" action=\"Delete_Reservation\">");
 					while(rs.next()) {
 						query = "select * from credentials where ID_User=?";
 						ps = connection.prepareStatement(query);				
@@ -139,6 +147,9 @@ public class Profile extends HttpServlet {
 						reservation_rs = ps.executeQuery();
 						reservation_rs.next();
 						out.print("<tr>"
+								+"<th>" +
+								"<input type=\"checkbox\" name=\""+ rs.getString("Reservation_id") +"\">"
+								+ "</th>"
 								+"<th>"+reservation_rs.getString("Name")+ "</th>"
 								+"<th>"+reservation_rs.getString("Address")+ "</th>"
 								+"<th>"+reservation_rs.getString("Phone")+ "</th>"
@@ -147,6 +158,8 @@ public class Profile extends HttpServlet {
 								+"<th>"+rs.getString("People")+ "</th>"
 								+"</tr>");
 					}
+					out.print("<th><input type=\"submit\" value=\"Delete\"></th>");
+					out.print("</form>");
 					out.print("</table>");
 					//display adding reservations
 					out.print("<form method=\"post\" action=\"Add_Reservation\">");

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 02, 2019 at 11:51 AM
+-- Generation Time: Jun 05, 2019 at 05:27 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.4
 
@@ -45,7 +45,8 @@ CREATE TABLE `credentials` (
 
 INSERT INTO `credentials` (`ID_User`, `Username`, `Password`, `Account_Type`, `Name`, `Address`, `Phone`, `Description`) VALUES
 (8, 'testh', 'test', 'Hotel', 'Hotel Testowy', 'Testowa 12 Wroc&#322;aw', '666666696', ''),
-(9, 'testc', 'test', 'Client', 'Marek Chmieelwski', 'Wyspia&#324;skiego 23', '123456123', '');
+(9, 'testc', 'test', 'Client', 'Marek Chmieelwski', 'Wyspia&#324;skiego 23', '123456123', ''),
+(10, 'testh2', 'test', 'Hotel', 'testowy2', 'testowa 87', '888999111', 'nie');
 
 -- --------------------------------------------------------
 
@@ -57,7 +58,8 @@ CREATE TABLE `reservations` (
   `Reservation_id` int(8) NOT NULL,
   `Hotel_Id` int(11) DEFAULT NULL,
   `Client_Id` int(11) DEFAULT NULL,
-  `Data` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Date_Start` date DEFAULT NULL,
+  `Date_End` date NOT NULL,
   `People` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -65,12 +67,12 @@ CREATE TABLE `reservations` (
 -- Dumping data for table `reservations`
 --
 
-INSERT INTO `reservations` (`Reservation_id`, `Hotel_Id`, `Client_Id`, `Data`, `People`) VALUES
-(1, 8, 8, '123', 123),
-(2, 8, 8, '1', 23),
-(3, 8, 9, '23.05', 2),
-(4, 8, 9, '24.05', 123),
-(5, 8, 9, '12.12', 23);
+INSERT INTO `reservations` (`Reservation_id`, `Hotel_Id`, `Client_Id`, `Date_Start`, `Date_End`, `People`) VALUES
+(1, 8, 8, '1996-03-23', '1996-03-23', 123),
+(2, 8, 8, '1996-03-23', '1996-03-23', 23),
+(4, 8, 9, '1996-03-23', '1996-03-23', 123),
+(10, 8, 9, '1000-10-10', '1010-10-10', 6),
+(12, 10, 9, '2001-01-01', '2001-01-04', 4);
 
 --
 -- Indexes for dumped tables
@@ -98,13 +100,13 @@ ALTER TABLE `reservations`
 -- AUTO_INCREMENT for table `credentials`
 --
 ALTER TABLE `credentials`
-  MODIFY `ID_User` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ID_User` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `Reservation_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Reservation_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables
